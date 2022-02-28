@@ -147,8 +147,8 @@ class TwilioVoice {
           'Connected - From: ${call._activeCall!.from}, To: ${call._activeCall!.to}, StartOn: ${call._activeCall!.initiated}, Direction: ${call._activeCall!.callDirection}');
       return CallEvent.connected;
     } else if (state.startsWith("Ringing|")) {
-      // call._activeCall =
-      //     createCallFromState(state, callDirection: CallDirection.outgoing);
+      call._activeCall =
+          createCallFromState(state, callDirection: CallDirection.outgoing);
 
       print(
           'Ringing - From: ${call._activeCall!.from}, To: ${call._activeCall!.to}, Direction: ${call._activeCall!.callDirection}');

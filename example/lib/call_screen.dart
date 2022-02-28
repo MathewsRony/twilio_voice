@@ -92,6 +92,8 @@ class _CallScreenState extends State<CallScreen> {
 
   String getCaller() {
     final activeCall = TwilioVoice.instance.call.activeCall;
+    print("getCaller");
+    print(activeCall);
     if (activeCall != null) {
       return activeCall.callDirection == CallDirection.outgoing
           ? activeCall.toFormatted
