@@ -138,8 +138,8 @@
 
                 <ImageView
                     android:id="@+id/btnMute"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/bg_full_rounded"
                     android:backgroundTint="@color/accent"
                     android:scaleType="centerInside"
@@ -161,8 +161,8 @@
 
             <ImageView
                 android:id="@+id/btnHangUp"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="@drawable/bg_full_rounded"
                 android:backgroundTint="@android:color/holo_red_light"
                 android:elevation="3dp"
