@@ -56,6 +56,16 @@
                 android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/text_vie_ans"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:textSize="10dp"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:text="Hiiiii" />
+
+        <TextView
                 android:id="@+id/tvCallStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
