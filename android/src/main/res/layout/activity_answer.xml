@@ -157,8 +157,8 @@
 
                 <ImageView
                         android:id="@+id/btnAnswer"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@drawable/bg_full_rounded"
                         android:backgroundTint="@android:color/holo_green_light"
                         android:elevation="3dp"
