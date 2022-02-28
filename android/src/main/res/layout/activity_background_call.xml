@@ -61,16 +61,6 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/text_view_id"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:gravity="center"
-                android:textSize="10dp"
-                android:padding="10dp"
-                android:textStyle="bold"
-                android:text="Hloooooo" />
-
-            <TextView
                 android:id="@+id/tvCallStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -138,8 +128,8 @@
 
                 <ImageView
                     android:id="@+id/btnMute"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:background="@drawable/bg_full_rounded"
                     android:backgroundTint="@color/accent"
                     android:scaleType="centerInside"
@@ -161,8 +151,8 @@
 
             <ImageView
                 android:id="@+id/btnHangUp"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:background="@drawable/bg_full_rounded"
                 android:backgroundTint="@android:color/holo_red_light"
                 android:elevation="3dp"
