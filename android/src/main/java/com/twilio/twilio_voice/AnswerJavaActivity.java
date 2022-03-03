@@ -55,8 +55,8 @@ public class AnswerJavaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_answer);
 
         tvUserName = (TextView) findViewById(R.id.tvUserName);
@@ -71,7 +71,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
         voiceBroadcastReceiver = new VoiceBroadcastReceiver();
         registerReceiver();
 
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
         Log.d(TAG, "isKeyguardUp $isKeyguardUp");
         if (isKeyguardUp) {
 
