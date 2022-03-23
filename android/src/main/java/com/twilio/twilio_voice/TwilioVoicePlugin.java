@@ -238,6 +238,12 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
         activity.startActivity(intent);
 
     }
+    private void handleCallerID() {
+        callOutgoing = false;
+        Intent intent = new Intent(activity, AnswerJavaActivity.class);
+        intent.setAction(Constants.CALLER_ID);
+
+    }
 
     private void registerReceiver() {
         if (!isReceiverRegistered) {
@@ -476,6 +482,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
             boolean added = false;
             if (caller != null) {
 
+                handleCallerID();
 //                ml.callback(caller);
                 sendPhoneCallEvents("LOG|defaultCaller is " + caller);
                 SharedPreferences.Editor edit = pSharedPref.edit();
@@ -563,7 +570,6 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
         Log.d(TAG, "onAttachedToActivity");
         this.activity = activityPluginBinding.getActivity();
-        ml= (MyListener) this.activity;
         activityPluginBinding.addOnNewIntentListener(this);
         registerReceiver();
     }

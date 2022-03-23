@@ -126,6 +126,9 @@ public class AnswerJavaActivity extends AppCompatActivity implements MyListener{
                     boolean muted = activeCall.isMuted();
                     activeCall.mute(!muted);
                     break;
+                case Constants.CALLER_ID:
+                    configCallID();
+                    break;
                 default: {
                 }
             }
@@ -148,6 +151,18 @@ public class AnswerJavaActivity extends AppCompatActivity implements MyListener{
         }
     }
 
+
+    private void configCallID() {
+        Log.d(TAG, "configCallUI");
+        if (activeCallInvite != null) {
+
+            String fromId = activeCallInvite.getFrom().replace("client:", "");
+            SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
+            String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
+            tvUserName.setText(caller);
+
+        }
+    }
 
     private void configCallUI() {
         Log.d(TAG, "configCallUI");
