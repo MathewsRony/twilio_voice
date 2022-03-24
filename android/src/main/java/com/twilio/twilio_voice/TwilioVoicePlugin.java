@@ -89,11 +89,8 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
     private SharedPreferences pSharedPref;
 
-    public TwilioVoicePlugin(MyListener ml) {
-        this.ml = ml;
-    }
+    public static MyListener ml;
 
-    MyListener ml;
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         register(flutterPluginBinding.getBinaryMessenger(), this, flutterPluginBinding.getApplicationContext());

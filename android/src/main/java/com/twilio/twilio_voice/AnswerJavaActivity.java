@@ -63,7 +63,7 @@ public class AnswerJavaActivity extends AppCompatActivity implements MyListener{
         tvCallStatus = (TextView) findViewById(R.id.tvCallStatus);
         btnAnswer = (ImageView) findViewById(R.id.btnAnswer);
         btnReject = (ImageView) findViewById(R.id.btnReject);
-
+        TwilioVoicePlugin.ml=this;
         KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
 
