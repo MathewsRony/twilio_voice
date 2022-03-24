@@ -89,11 +89,15 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
     private SharedPreferences pSharedPref;
 
+    public TwilioVoicePlugin(MyListener ml) {
+        this.ml = ml;
+    }
+
     MyListener ml;
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         register(flutterPluginBinding.getBinaryMessenger(), this, flutterPluginBinding.getApplicationContext());
-        callIDChecker();
+        //callIDChecker();
         hasStarted = true;
     }
 
@@ -101,6 +105,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
         ml= (MyListener) this;
     }
+
     private static void register(BinaryMessenger messenger, TwilioVoicePlugin plugin, Context context) {
         Log.d(TAG, "register(BinaryMessenger");
         plugin.methodChannel = new MethodChannel(messenger, CHANNEL_NAME + "/messages");
