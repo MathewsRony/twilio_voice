@@ -31,7 +31,7 @@ import com.twilio.voice.CallException;
 import com.twilio.voice.CallInvite;
 
 
-public class AnswerJavaActivity extends AppCompatActivity implements MyListener{
+public class AnswerJavaActivity extends AppCompatActivity {
 
     private static String TAG = "AnswerActivity";
     public static final String TwilioPreferences = "com.twilio.twilio_voicePreferences";
@@ -63,7 +63,7 @@ public class AnswerJavaActivity extends AppCompatActivity implements MyListener{
         tvCallStatus = (TextView) findViewById(R.id.tvCallStatus);
         btnAnswer = (ImageView) findViewById(R.id.btnAnswer);
         btnReject = (ImageView) findViewById(R.id.btnReject);
-        TwilioVoicePlugin.ml=this;
+//        TwilioVoicePlugin.ml=this;
         KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
 
@@ -271,15 +271,15 @@ public class AnswerJavaActivity extends AppCompatActivity implements MyListener{
         };
     }
 
-    @Override
-    public void callback(String result) {
-        Log.e("Error****", " In callback");
-        if (result != null) {
-            if (!result.equals("")) {
-                tvUserName.setText(result);
-            }
-        }
-    }
+//    @Override
+//    public void callback(String result) {
+//        Log.e("Error****", " In callback");
+//        if (result != null) {
+//            if (!result.equals("")) {
+//                tvUserName.setText(result);
+//            }
+//        }
+//    }
 
     private class VoiceBroadcastReceiver extends BroadcastReceiver {
 

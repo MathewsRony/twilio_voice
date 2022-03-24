@@ -481,7 +481,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
                 SharedPreferences.Editor edit = pSharedPref.edit();
                 edit.putString("defaultCaller", caller);
                 edit.apply();
-                ml.callback(caller);
+//                ml.callback(caller);
                 added = true;
             }
             result.success(added);
