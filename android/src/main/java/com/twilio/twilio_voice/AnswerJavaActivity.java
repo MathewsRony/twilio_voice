@@ -95,6 +95,31 @@ public class AnswerJavaActivity extends AppCompatActivity {
         }
 
         handleIncomingCallIntent(getIntent());
+        Thread t = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d(TAG, "Log!!!!!!!!!=Timer");
+                                String fromId = activeCallInvite.getFrom().replace("client:", "");
+                                SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
+                                String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
+                                tvUserName.setText(caller);
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+
+        t.start();
+
     }
 
     private void handleIncomingCallIntent(Intent intent) {
