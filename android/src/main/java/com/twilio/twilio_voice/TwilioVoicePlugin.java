@@ -89,14 +89,11 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
     private SharedPreferences pSharedPref;
 
-    MyListener ml;
-//    TwilioVoicePlugin(MyListener ml) {
-//        //Setting the listener
-//        this.ml = ml;
-//    }
+    private MyListener ml;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+//        this.ml = (MyListener) this;
         register(flutterPluginBinding.getBinaryMessenger(), this, flutterPluginBinding.getApplicationContext());
         hasStarted = true;
     }
@@ -240,8 +237,14 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
     }
     private void handleCallerID() {
         callOutgoing = false;
+
+                Log.d(TAG, "CALLER_ID");
         Intent intent = new Intent(activity, AnswerJavaActivity.class);
         intent.setAction(Constants.CALLER_ID);
+        activity.startActivity(intent);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.CALLER_ID);
 
     }
 
@@ -483,7 +486,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
             if (caller != null) {
 
                 handleCallerID();
-//                ml.callback(caller);
+                ml.callback(caller);
                 sendPhoneCallEvents("LOG|defaultCaller is " + caller);
                 SharedPreferences.Editor edit = pSharedPref.edit();
                 edit.putString("defaultCaller", caller);

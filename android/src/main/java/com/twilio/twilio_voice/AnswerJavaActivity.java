@@ -46,7 +46,7 @@ public class AnswerJavaActivity extends AppCompatActivity implements MyListener{
     private int activeCallNotificationId;
     private static final int MIC_PERMISSION_REQUEST_CODE = 17893;
     private PowerManager.WakeLock wakeLock;
-    private TextView tvUserName;
+    public TextView tvUserName;
     private TextView tvCallStatus;
     private ImageView btnAnswer;
     private ImageView btnReject;
@@ -152,16 +152,16 @@ public class AnswerJavaActivity extends AppCompatActivity implements MyListener{
     }
 
 
-    private void configCallID() {
+    public void configCallID() {
         Log.d(TAG, "configCallUI");
-        if (activeCallInvite != null) {
-
-            String fromId = activeCallInvite.getFrom().replace("client:", "");
-            SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
-            String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
-            tvUserName.setText(caller);
-
-        }
+//        if (activeCallInvite != null) {
+//
+//            String fromId = activeCallInvite.getFrom().replace("client:", "");
+//            SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
+//            String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
+//            tvUserName.setText(caller);
+//
+//        }
     }
 
     private void configCallUI() {
