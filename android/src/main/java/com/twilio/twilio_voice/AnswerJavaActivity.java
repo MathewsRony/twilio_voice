@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
@@ -52,6 +53,9 @@ public class AnswerJavaActivity extends AppCompatActivity {
     private ImageView btnReject;
     Call.Listener callListener = callListener();
 
+    Handler handler = new Handler();
+    Runnable runnable;
+    int delay = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,30 +99,6 @@ public class AnswerJavaActivity extends AppCompatActivity {
         }
 
         handleIncomingCallIntent(getIntent());
-        Thread t = new Thread() {
-
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Log.d(TAG, "Log!!!!!!!!!=Timer");
-                                String fromId = activeCallInvite.getFrom().replace("client:", "");
-                                SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
-                                String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
-                                tvUserName.setText(caller);
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                }
-            }
-        };
-
-        t.start();
 
     }
 
@@ -357,6 +337,21 @@ public class AnswerJavaActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        handler.postDelayed(runnable = new Runnable() {
+        public void run() {
+            handler.postDelayed(runnable, delay);
+            try {
+
+                Log.d(TAG, "Log!!!!!!!!!=Timer");
+                String fromId = activeCallInvite.getFrom().replace("client:", "");
+                SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
+                String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
+                tvUserName.setText(caller);
+            }catch (Exception e){
+
+            }
+        }
+    }, delay);
         super.onResume();
         registerReceiver();
     }
@@ -369,6 +364,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
 //    }
 
     private void newCancelCallClickListener() {
+        handler.removeCallbacks(runnable);
         finish();
     }
 
