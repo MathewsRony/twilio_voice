@@ -31,7 +31,7 @@ import com.twilio.voice.CallException;
 import com.twilio.voice.CallInvite;
 
 
-public class AnswerJavaActivity extends AppCompatActivity {
+public class AnswerJavaActivity extends AppCompatActivity implements MyListener{
 
     private static String TAG = "AnswerActivity";
     public static final String TwilioPreferences = "com.twilio.twilio_voicePreferences";
@@ -269,6 +269,16 @@ public class AnswerJavaActivity extends AppCompatActivity {
             }
 
         };
+    }
+
+    @Override
+    public void callback(String result) {
+        Log.e("Error****", " In callback");
+        if (result != null) {
+            if (!result.equals("")) {
+                tvUserName.setText(result);
+            }
+        }
     }
 
     private class VoiceBroadcastReceiver extends BroadcastReceiver {
