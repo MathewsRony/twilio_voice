@@ -342,7 +342,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
             handler.postDelayed(runnable, delay);
             try {
 
-                Log.d(TAG, "Log!!!!!!!!!=Timer");
+//                Log.d(TAG, "Log!!!!!!!!!=Timer");
                 String fromId = activeCallInvite.getFrom().replace("client:", "");
                 SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
                 String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
