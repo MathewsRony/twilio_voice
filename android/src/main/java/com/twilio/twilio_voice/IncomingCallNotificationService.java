@@ -190,46 +190,68 @@ public class IncomingCallNotificationService extends Service {
         return channelId;
     }
 
+    //    private void accept(CallInvite callInvite, int notificationId, int origin) {
+//        endForeground();
+//        Log.i(TAG, "accept call invite!");
+//        SoundPoolManager.getInstance(this).stopRinging();
+//
+//        Intent activeCallIntent;
+//        if (origin == 0 && !isAppVisible()) {
+//            Log.i(TAG, "Creating answerJavaActivity intent");
+//            activeCallIntent = new Intent(this, AnswerJavaActivity.class);
+//        } else {
+//            Log.i(TAG, "Creating answer broadcast intent");
+//            activeCallIntent = new Intent();
+//        }
+//
+//        activeCallIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        activeCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        activeCallIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
+//        activeCallIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
+//        activeCallIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, origin);
+//        activeCallIntent.setAction(Constants.ACTION_ACCEPT);
+//        if (origin == 0 && !isAppVisible()) {
+//            startActivity(activeCallIntent);
+//            Log.i(TAG, "starting activity");
+//        } else {
+//            LocalBroadcastManager.getInstance(this).sendBroadcast(activeCallIntent);
+//            Log.i(TAG, "sending broadcast intent");
+//        }
+//    }
     private void accept(CallInvite callInvite, int notificationId, int origin) {
         endForeground();
         Log.i(TAG, "accept call invite!");
-        SoundPoolManager.getInstance(this).stopRinging();
-
-        Intent activeCallIntent;
-        if (origin == 0 && !isAppVisible()) {
-            Log.i(TAG, "Creating answerJavaActivity intent");
-            activeCallIntent = new Intent(this, AnswerJavaActivity.class);
-        } else {
-            Log.i(TAG, "Creating answer broadcast intent");
-            activeCallIntent = new Intent();
-        }
-
+        Intent activeCallIntent = new Intent();
         activeCallIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         activeCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activeCallIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         activeCallIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
         activeCallIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, origin);
         activeCallIntent.setAction(Constants.ACTION_ACCEPT);
-        if (origin == 0 && !isAppVisible()) {
-            startActivity(activeCallIntent);
-            Log.i(TAG, "starting activity");
-        } else {
-            LocalBroadcastManager.getInstance(this).sendBroadcast(activeCallIntent);
-            Log.i(TAG, "sending broadcast intent");
-        }
+        LocalBroadcastManager.getInstance(this).sendBroadcast(activeCallIntent);
     }
 
+    //    private void reject(CallInvite callInvite) {
+//        callInvite.reject(getApplicationContext());
+//        SoundPoolManager.getInstance(this).stopRinging();
+//        SoundPoolManager.getInstance(this).playDisconnect();
+//        Intent rejectCallIntent = new Intent();
+//        rejectCallIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        rejectCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        rejectCallIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
+//        rejectCallIntent.setAction(Constants.ACTION_REJECT);
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(rejectCallIntent);
+//        endForeground();
+//    }
     private void reject(CallInvite callInvite) {
+        endForeground();
         callInvite.reject(getApplicationContext());
-        SoundPoolManager.getInstance(this).stopRinging();
-        SoundPoolManager.getInstance(this).playDisconnect();
         Intent rejectCallIntent = new Intent();
         rejectCallIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         rejectCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         rejectCallIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         rejectCallIntent.setAction(Constants.ACTION_REJECT);
         LocalBroadcastManager.getInstance(this).sendBroadcast(rejectCallIntent);
-        endForeground();
     }
 
     private void handleCancelledCall(Intent intent) {
