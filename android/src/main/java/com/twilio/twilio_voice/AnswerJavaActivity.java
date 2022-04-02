@@ -54,21 +54,17 @@ public class AnswerJavaActivity extends AppCompatActivity {
         btnReject = (ImageView) findViewById(R.id.btnReject);
         KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
-        handler.postDelayed(runnable = new Runnable() {
-            public void run() {
-                handler.postDelayed(runnable, delay);
-                try {
-
+        handler.postDelayed(runnable, delay);
+        try {
 //                Log.d(TAG, "Log!!!!!!!!!=Timer");
-                    String fromId = activeCallInvite.getFrom().replace("client:", "");
-                    SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
-                    String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
-                    tvUserName.setText(caller);
-                }catch (Exception e){
+            String fromId = activeCallInvite.getFrom().replace("client:", "");
+            SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
+            String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
+            tvUserName.setText(caller);
+        }catch (Exception exception){
 
-                }
-            }
-        }, delay);
+                Log.d(TAG, exception.toString());
+        }
         Log.d(TAG, "isKeyguardUp $isKeyguardUp");
         if (isKeyguardUp) {
 
