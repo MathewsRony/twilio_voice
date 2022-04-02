@@ -352,31 +352,41 @@ public class IncomingCallNotificationService extends Service {
     /*
      * Send the CallInvite to the VoiceActivity. Start the activity if it is not running already.
      */
+//    private void sendCallInviteToActivity(CallInvite callInvite, int notificationId) {
+//
+//
+//        Log.i(TAG, "sendCallInviteToActivity.");
+//
+//        Intent pluginIntent = new Intent();
+//        pluginIntent.setAction(Constants.ACTION_INCOMING_CALL);
+//        pluginIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
+//        pluginIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(pluginIntent);
+//        if (TwilioVoicePlugin.hasStarted || (Build.VERSION.SDK_INT >= 29 && !isAppVisible())) {
+//            return;
+//        }
+//        startAnswerActivity(callInvite, notificationId);
+//    }
+
     private void sendCallInviteToActivity(CallInvite callInvite, int notificationId) {
-
-
-        Log.i(TAG, "sendCallInviteToActivity.");
-
+//        if (Build.VERSION.SDK_INT >= 29 && !isAppVisible()) {
+//            return;
+//        }
         Intent pluginIntent = new Intent();
         pluginIntent.setAction(Constants.ACTION_INCOMING_CALL);
         pluginIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
         pluginIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         LocalBroadcastManager.getInstance(this).sendBroadcast(pluginIntent);
-        if (TwilioVoicePlugin.hasStarted || (Build.VERSION.SDK_INT >= 29 && !isAppVisible())) {
-            return;
-        }
-        startAnswerActivity(callInvite, notificationId);
     }
-
-    private void startAnswerActivity(CallInvite callInvite, int notificationId) {
-        Intent intent = new Intent(this, AnswerJavaActivity.class);
-        intent.setAction(Constants.ACTION_INCOMING_CALL);
-        intent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
-        intent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
+//    private void startAnswerActivity(CallInvite callInvite, int notificationId) {
+//        Intent intent = new Intent(this, AnswerJavaActivity.class);
+//        intent.setAction(Constants.ACTION_INCOMING_CALL);
+//        intent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
+//        intent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
+//    }
 
     private boolean isAppVisible() {
         return ProcessLifecycleOwner
