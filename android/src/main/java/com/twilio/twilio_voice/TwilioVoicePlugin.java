@@ -133,10 +133,14 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
         Log.d(TAG, "handleIncomingCallIntent");
         if (intent != null && intent.getAction() != null) {
             String action = intent.getAction();
+            Log.d(TAG, "**********1212" + action);
             Log.d(TAG, "Handling incoming call intent for action " + action);
             activeCallInvite = intent.getParcelableExtra(Constants.INCOMING_CALL_INVITE);
+            Log.e(TAG, "**********1" + action);
             activeCallNotificationId = intent.getIntExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, 0);
+            Log.d(TAG, "**********2" + action);
             callOutgoing = false;
+            Log.d(TAG, "**********3" + action);
 
             switch (action) {
                 case Constants.ACTION_INCOMING_CALL:
@@ -153,8 +157,10 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
                     handleReject();
                     break;
                 case Constants.ACTION_ACCEPT:
+                    Log.e(TAG, "**********5" + action);
                         int acceptOrigin = intent.getIntExtra(Constants.ACCEPT_CALL_ORIGIN,0);
                         if(acceptOrigin == 0){
+                            Log.d(TAG, "**********6" + action);
                              Intent answerIntent = new Intent(activity, AnswerJavaActivity.class);
                             answerIntent.setAction(Constants.ACTION_ACCEPT);
                             answerIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
@@ -163,6 +169,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
                             answerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             activity.startActivity(answerIntent);
                         }else{
+                            Log.d(TAG, "**********7" + action);
                             answer();
                         }
 
