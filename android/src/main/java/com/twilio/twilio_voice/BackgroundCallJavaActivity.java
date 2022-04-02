@@ -30,16 +30,15 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 //import com.twilio.voice.Call;
 import com.twilio.voice.CallInvite;
 
-public class BackgroundCallJavaActivity extends AppCompatActivity {
+public class BackgroundCallJavaActivity extends AppCompatActivity{
 
     private static String TAG = "BackgroundCallActivity";
-    public static final String TwilioPreferences = "com.twilio.twilio_voicePreferences";
+    public static final String TwilioPreferences = "mx.TwilioPreferences";
 
 
     //    private Call activeCall;
     private NotificationManager notificationManager;
-    
-    private PowerManager powerManager;
+
     private PowerManager.WakeLock wakeLock;
 
     private TextView tvUserName;
@@ -52,10 +51,9 @@ public class BackgroundCallJavaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_background_call);
-        powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 
-        tvUserName = (TextView) findViewById(R.id.tvUserName);
-        tvCallStatus = (TextView) findViewById(R.id.tvCallStatus);
+        tvUserName = (TextView) findViewById(R.id.tvUserName) ;
+        tvCallStatus = (TextView) findViewById(R.id.tvCallStatus) ;
         btnMute = (ImageView) findViewById(R.id.btnMute);
         btnOutput = (ImageView) findViewById(R.id.btnOutput);
         btnHangUp = (ImageView) findViewById(R.id.btnHangUp);
@@ -67,12 +65,15 @@ public class BackgroundCallJavaActivity extends AppCompatActivity {
         if (isKeyguardUp) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                Log.d(TAG, "ohh shiny phone!");
                 setTurnScreenOn(true);
                 setShowWhenLocked(true);
                 kgm.requestDismissKeyguard(this, null);
 
-            } else {
-                wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, TAG);
+            }else{
+                Log.d(TAG, "diego's old phone!");
+                PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                wakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, TAG);
                 wakeLock.acquire();
 
                 getWindow().addFlags(
@@ -89,55 +90,35 @@ public class BackgroundCallJavaActivity extends AppCompatActivity {
         handleCallIntent(getIntent());
     }
 
-    private void handleCallIntent(Intent intent) {
-        if (intent != null) {
+    private void handleCallIntent(Intent intent){
+        if (intent != null){
 
-            
-            if (intent.getStringExtra(Constants.CALL_FROM) != null) {
-                activateSensor();
-                String fromId = intent.getStringExtra(Constants.CALL_FROM).replace("client:", "");
+            String fromId = intent.getStringExtra(Constants.CALL_FROM).replace("client:","");
+            if(fromId != null){
 
                 SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
-                String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
-                Log.d(TAG, "handleCallIntent");
-                Log.d(TAG, "caller from");
-                Log.d(TAG, caller);
+                String caller = preferences.getString(fromId, preferences.getString("defaultCaller", "Desconocido"));
+                Log.d(TAG,"handleCallIntent");
+                Log.d(TAG,"caller from");
+                Log.d(TAG,caller);
 
                 tvUserName.setText(caller);
-                tvCallStatus.setText(getString(R.string.connected_status));
+                tvCallStatus.setText("Conectado");
                 Log.d(TAG, "handleCallIntent-");
                 configCallUI();
-            }else{
-                finish();
             }
         }
     }
 
-    private void activateSensor() {
-        if (wakeLock == null) {
-            Log.d(TAG, "New wakeLog");
-            wakeLock = powerManager.newWakeLock(PowerManager.PROXIMITY_SCREEN_OFF_WAKE_LOCK, "incall");
-        }
-        if (!wakeLock.isHeld()) {
-            Log.d(TAG, "wakeLog acquire");
-            wakeLock.acquire();
-        } 
-    }
 
-    private void deactivateSensor() {
-        if (wakeLock != null && wakeLock.isHeld()) {
-            Log.d(TAG, "wakeLog release");
-            wakeLock.release();
-        } 
-    }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent != null && intent.getAction() != null) {
+        if (intent != null && intent.getAction() != null){
             Log.d(TAG, "onNewIntent-");
             Log.d(TAG, intent.getAction());
-            switch (intent.getAction()) {
+            switch (intent.getAction()){
                 case Constants.ACTION_CANCEL_CALL:
                     callCanceled();
                     break;
@@ -146,10 +127,9 @@ public class BackgroundCallJavaActivity extends AppCompatActivity {
             }
         }
     }
-    
+
 
     boolean isMuted = false;
-
     private void configCallUI() {
         Log.d(TAG, "configCallUI");
 
@@ -168,7 +148,6 @@ public class BackgroundCallJavaActivity extends AppCompatActivity {
             public void onClick(View v) {
                 sendIntent(Constants.ACTION_END_CALL);
                 finish();
-
             }
         });
         btnOutput.setOnClickListener(new View.OnClickListener() {
@@ -188,9 +167,9 @@ public class BackgroundCallJavaActivity extends AppCompatActivity {
 
         ColorStateList colorStateList;
 
-        if (enabled) {
+        if(enabled){
             colorStateList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.white_55));
-        } else {
+        }else{
             colorStateList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.accent));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -198,9 +177,9 @@ public class BackgroundCallJavaActivity extends AppCompatActivity {
         }
     }
 
-    private void sendIntent(String action) {
-        Log.d(TAG, "Sending intent");
-        Log.d(TAG, action);
+    private void sendIntent(String action){
+        Log.d(TAG,"Sending intent");
+        Log.d(TAG,action);
         Intent activeCallIntent = new Intent();
         activeCallIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         activeCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -209,15 +188,26 @@ public class BackgroundCallJavaActivity extends AppCompatActivity {
     }
 
 
-    private void callCanceled() {
+    private void callCanceled(){
         finish();
     }
 
 
+
+    private Boolean isAppVisible(){
+        return ProcessLifecycleOwner
+                .get()
+                .getLifecycle()
+                .getCurrentState()
+                .isAtLeast(Lifecycle.State.STARTED);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        deactivateSensor();
+        if (wakeLock != null){
+            wakeLock.release();
+        }
     }
 
 }
