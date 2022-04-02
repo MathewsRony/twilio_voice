@@ -162,6 +162,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
                         if(acceptOrigin == 0){
                             Log.d(TAG, "**********6" + action);
                              Intent answerIntent = new Intent(activity, AnswerJavaActivity.class);
+                            Log.d(TAG, "**********6" + action);
                             answerIntent.setAction(Constants.ACTION_ACCEPT);
                             answerIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
                             answerIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
