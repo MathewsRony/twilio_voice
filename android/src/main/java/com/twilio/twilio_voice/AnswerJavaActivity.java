@@ -191,24 +191,6 @@ public class AnswerJavaActivity extends AppCompatActivity {
     }
 
 
-//    private void acceptCall() {
-//        Log.d(TAG, "Accepting call");
-//        Intent acceptIntent = new Intent(this, IncomingCallNotificationService.class);
-//        acceptIntent.setAction(Constants.ACTION_ACCEPT);
-//        acceptIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
-//        acceptIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, 1);
-//        acceptIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
-//        Log.d(TAG, "Clicked accept startService");
-//        startService(acceptIntent);
-//        if (TwilioVoicePlugin.hasStarted) {
-//            handler.removeCallbacks(runnable);
-//            finish();
-//        } else {
-//            Log.d(TAG, "Answering call");
-//            activeCallInvite.accept(this, callListener);
-//            notificationManager.cancel(activeCallNotificationId);
-//        }
-//    }
     private void acceptCall() {
         Log.d(TAG, "Accepting call");
         Intent acceptIntent = new Intent(this, IncomingCallNotificationService.class);
@@ -218,8 +200,16 @@ public class AnswerJavaActivity extends AppCompatActivity {
         acceptIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
         Log.d(TAG, "Clicked accept startService");
         startService(acceptIntent);
-        finish();
+        if (TwilioVoicePlugin.hasStarted) {
+            handler.removeCallbacks(runnable);
+            finish();
+        } else {
+            Log.d(TAG, "Answering call");
+            activeCallInvite.accept(this, callListener);
+            notificationManager.cancel(activeCallNotificationId);
+        }
     }
+
     private void startAnswerActivity(Call call) {
         Intent intent = new Intent(this, BackgroundCallJavaActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
