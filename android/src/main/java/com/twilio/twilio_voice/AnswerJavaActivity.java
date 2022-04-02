@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat;
 
 import com.twilio.voice.Call;
 import com.twilio.voice.CallInvite;
-import android.os.Handler;
 
 
 public class AnswerJavaActivity extends AppCompatActivity {
@@ -39,9 +38,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
     private TextView tvCallStatus;
     private ImageView btnAnswer;
     private ImageView btnReject;
-    Handler handler = new Handler();
-    Runnable runnable;
-    int delay = 1000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,25 +104,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
             }
         }
     }
-    @Override
-    protected void onResume() {
-        handler.postDelayed(runnable = new Runnable() {
-            public void run() {
-                handler.postDelayed(runnable, delay);
-                try {
 
-                Log.d(TAG, "Log!!!!!!!!!=Timer");
-                    String fromId = activeCallInvite.getFrom().replace("client:", "");
-                    SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
-                    String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
-                    tvUserName.setText(caller);
-                }catch (Exception e){
-
-                }
-            }
-        }, delay);
-        super.onResume();
-    }
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -189,13 +168,11 @@ public class AnswerJavaActivity extends AppCompatActivity {
         acceptIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, 1);
         acceptIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
         Log.d(TAG, "Clicked accept startService");
-        handler.removeCallbacks(runnable);
         startService(acceptIntent);
         finish();
     }
 
     private void newCancelCallClickListener() {
-        handler.removeCallbacks(runnable);
         finish();
     }
 
@@ -205,7 +182,6 @@ public class AnswerJavaActivity extends AppCompatActivity {
             Intent rejectIntent = new Intent(this, IncomingCallNotificationService.class);
             rejectIntent.setAction(Constants.ACTION_REJECT);
             rejectIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
-            handler.removeCallbacks(runnable);
             startService(rejectIntent);
             finish();
         }
