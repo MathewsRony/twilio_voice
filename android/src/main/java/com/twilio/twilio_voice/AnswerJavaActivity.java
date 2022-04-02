@@ -54,21 +54,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
         btnReject = (ImageView) findViewById(R.id.btnReject);
         KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
-        handler.postDelayed(runnable = new Runnable() {
-            public void run() {
-                handler.postDelayed(runnable, delay);
-                try {
 
-//                Log.d(TAG, "Log!!!!!!!!!=Timer");
-                    String fromId = activeCallInvite.getFrom().replace("client:", "");
-                    SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
-                    String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
-                    tvUserName.setText(caller);
-                }catch (Exception e){
-
-                }
-            }
-        }, delay);
         Log.d(TAG, "isKeyguardUp $isKeyguardUp");
         if (isKeyguardUp) {
 
@@ -190,6 +176,26 @@ public class AnswerJavaActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        handler.postDelayed(runnable = new Runnable() {
+            public void run() {
+                handler.postDelayed(runnable, delay);
+                try {
+
+//                Log.d(TAG, "Log!!!!!!!!!=Timer");
+                    String fromId = activeCallInvite.getFrom().replace("client:", "");
+                    SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
+                    String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
+                    tvUserName.setText(caller);
+                }catch (Exception e){
+
+                }
+            }
+        }, delay);
+        super.onResume();
+//        registerReceiver();
+    }
     private void newCancelCallClickListener() {
         handler.removeCallbacks(runnable);
         finish();
