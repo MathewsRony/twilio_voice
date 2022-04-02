@@ -2,17 +2,12 @@ package com.twilio.twilio_voice;
 
 import android.Manifest;
 import android.app.KeyguardManager;
-import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
@@ -25,23 +20,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.twilio.voice.Call;
-import com.twilio.voice.CallException;
 import com.twilio.voice.CallInvite;
 
 
 public class AnswerJavaActivity extends AppCompatActivity {
 
     private static String TAG = "AnswerActivity";
-    public static final String TwilioPreferences = "com.twilio.twilio_voicePreferences";
-
-    private NotificationManager notificationManager;
-    private boolean isReceiverRegistered = false;
-    private VoiceBroadcastReceiver voiceBroadcastReceiver;
-
-    private boolean initiatedDisconnect = false;
+    public static final String TwilioPreferences = "mx.TwilioPreferences";
 
     private CallInvite activeCallInvite;
     private int activeCallNotificationId;
@@ -51,29 +38,20 @@ public class AnswerJavaActivity extends AppCompatActivity {
     private TextView tvCallStatus;
     private ImageView btnAnswer;
     private ImageView btnReject;
-    Call.Listener callListener = callListener();
 
-    Handler handler = new Handler();
-    Runnable runnable;
-    int delay = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answer);
 
-        Log.d(TAG, "**********9");
         tvUserName = (TextView) findViewById(R.id.tvUserName);
         tvCallStatus = (TextView) findViewById(R.id.tvCallStatus);
         btnAnswer = (ImageView) findViewById(R.id.btnAnswer);
         btnReject = (ImageView) findViewById(R.id.btnReject);
+
         KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
 
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        voiceBroadcastReceiver = new VoiceBroadcastReceiver();
-        registerReceiver();
-
-//        getSupportActionBar().hide();
         Log.d(TAG, "isKeyguardUp $isKeyguardUp");
         if (isKeyguardUp) {
 
@@ -97,7 +75,6 @@ public class AnswerJavaActivity extends AppCompatActivity {
         }
 
         handleIncomingCallIntent(getIntent());
-
     }
 
     private void handleIncomingCallIntent(Intent intent) {
@@ -116,20 +93,12 @@ public class AnswerJavaActivity extends AppCompatActivity {
                 case Constants.ACTION_CANCEL_CALL:
                     newCancelCallClickListener();
                     break;
-                case Constants.ACTION_ACCEPT:
-                    checkPermissionsAndAccept();
-                    break;
-                case Constants.ACTION_END_CALL:
-                    Log.d(TAG, "ending call" + activeCall != null ? "TRue" : "False");
-                    activeCall.disconnect();
-                    initiatedDisconnect = true;
-                    handler.removeCallbacks(runnable);
-                    finish();
-                    break;
-                case Constants.ACTION_TOGGLE_MUTE:
-                    boolean muted = activeCall.isMuted();
-                    activeCall.mute(!muted);
-                    break;
+               case Constants.ACTION_ACCEPT:
+                   checkPermissionsAndAccept();
+                   break;
+//                case Constants.ACTION_REJECT:
+//                    newCancelCallClickListener();
+//                    break;
                 default: {
                 }
             }
@@ -139,8 +108,8 @@ public class AnswerJavaActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        Log.d(TAG, "onNewIntent-");
         if (intent != null && intent.getAction() != null) {
+            Log.d(TAG, "onNewIntent-");
             Log.d(TAG, intent.getAction());
             switch (intent.getAction()) {
                 case Constants.ACTION_CANCEL_CALL:
@@ -179,7 +148,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
         }
     }
 
-    private void checkPermissionsAndAccept() {
+    private void checkPermissionsAndAccept(){
         Log.d(TAG, "Clicked accept");
         if (!checkPermissionForMicrophone()) {
             Log.d(TAG, "configCallUI-requestAudioPermissions");
@@ -200,172 +169,10 @@ public class AnswerJavaActivity extends AppCompatActivity {
         acceptIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
         Log.d(TAG, "Clicked accept startService");
         startService(acceptIntent);
-        if (TwilioVoicePlugin.hasStarted) {
-            handler.removeCallbacks(runnable);
-            finish();
-        } else {
-            Log.d(TAG, "Answering call");
-            activeCallInvite.accept(this, callListener);
-            notificationManager.cancel(activeCallNotificationId);
-        }
+        finish();
     }
-
-    private void startAnswerActivity(Call call) {
-        Intent intent = new Intent(this, BackgroundCallJavaActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constants.CALL_FROM, call.getFrom());
-        startActivity(intent);
-        Log.d(TAG, "Connected");
-    }
-
-    private void endCall() {
-
-        if (!initiatedDisconnect) {
-            Intent intent = new Intent(this, BackgroundCallJavaActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setAction(Constants.ACTION_CANCEL_CALL);
-            handler.removeCallbacks(runnable);
-
-            this.startActivity(intent);
-            finish();
-        }
-
-    }
-
-    Call activeCall;
-
-    private Call.Listener callListener() {
-        return new Call.Listener() {
-
-
-            @Override
-            public void onConnectFailure(@NonNull Call call, @NonNull CallException error) {
-                Log.d(TAG, "Connect failure");
-                Log.e(TAG, "Call Error: %d, %s" + error.getErrorCode() + error.getMessage());
-            }
-
-            @Override
-            public void onRinging(@NonNull Call call) {
-
-            }
-
-            @Override
-            public void onConnected(@NonNull Call call) {
-                activeCall = call;
-                startAnswerActivity(call);
-            }
-
-            @Override
-            public void onReconnecting(@NonNull Call call, @NonNull CallException callException) {
-                Log.d(TAG, "onReconnecting");
-            }
-
-            @Override
-            public void onReconnected(@NonNull Call call) {
-                Log.d(TAG, "onReconnected");
-            }
-
-            @Override
-            public void onDisconnected(@NonNull Call call, CallException error) {
-                Log.d(TAG, "Disconnected");
-                endCall();
-            }
-
-        };
-    }
-
-//    @Override
-//    public void callback(String result) {
-//        Log.e("Error****", " In callback");
-//        if (result != null) {
-//            if (!result.equals("")) {
-//                tvUserName.setText(result);
-//            }
-//        }
-//    }
-
-    private class VoiceBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Log.d(TAG, "Received broadcast for action " + action);
-
-            if (action != null)
-                switch (action) {
-                    case Constants.ACTION_INCOMING_CALL:
-                    case Constants.ACTION_CANCEL_CALL:
-                    case Constants.ACTION_TOGGLE_MUTE:
-                    case Constants.ACTION_END_CALL:
-                        /*
-                         * Handle the incoming or cancelled call invite
-                         */
-                        Log.d(TAG, "received intent to answerActivity");
-                        handleIncomingCallIntent(intent);
-                        break;
-                    default:
-                        Log.d(TAG, "Received broadcast for other action " + action);
-                        break;
-
-                }
-        }
-    }
-
-    private void registerReceiver() {
-        Log.d(TAG, "Registering answerJavaActivity receiver");
-        if (!isReceiverRegistered) {
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(Constants.ACTION_TOGGLE_MUTE);
-            intentFilter.addAction(Constants.ACTION_CANCEL_CALL);
-            intentFilter.addAction(Constants.ACTION_END_CALL);
-            LocalBroadcastManager.getInstance(this).registerReceiver(
-                    voiceBroadcastReceiver, intentFilter);
-            isReceiverRegistered = true;
-        }
-    }
-
-    private void unregisterReceiver() {
-        Log.d(TAG, "Unregistering receiver");
-        if (isReceiverRegistered) {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(voiceBroadcastReceiver);
-            isReceiverRegistered = false;
-        }
-    }
-
-
-    @Override
-    protected void onResume() {
-        handler.postDelayed(runnable = new Runnable() {
-        public void run() {
-            handler.postDelayed(runnable, delay);
-            try {
-
-//                Log.d(TAG, "Log!!!!!!!!!=Timer");
-                String fromId = activeCallInvite.getFrom().replace("client:", "");
-                SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
-                String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
-                tvUserName.setText(caller);
-            }catch (Exception e){
-
-            }
-        }
-    }, delay);
-        super.onResume();
-        registerReceiver();
-    }
-
-    // We still want to listen messages from backgroundCallJavaActivity
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        unregisterReceiver();
-//    }
 
     private void newCancelCallClickListener() {
-        handler.removeCallbacks(runnable);
         finish();
     }
 
@@ -376,7 +183,6 @@ public class AnswerJavaActivity extends AppCompatActivity {
             rejectIntent.setAction(Constants.ACTION_REJECT);
             rejectIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
             startService(rejectIntent);
-            handler.removeCallbacks(runnable);
             finish();
         }
     }
@@ -417,8 +223,6 @@ public class AnswerJavaActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "AnserJAvaActivity ondestroy");
-//        unregisterReceiver();
         super.onDestroy();
         if (wakeLock != null) {
             wakeLock.release();
