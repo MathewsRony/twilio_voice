@@ -59,15 +59,12 @@ public class AnswerJavaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_answer);
 
         tvUserName = (TextView) findViewById(R.id.tvUserName);
         tvCallStatus = (TextView) findViewById(R.id.tvCallStatus);
         btnAnswer = (ImageView) findViewById(R.id.btnAnswer);
         btnReject = (ImageView) findViewById(R.id.btnReject);
-//        TwilioVoicePlugin.ml=this;
         KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
 
