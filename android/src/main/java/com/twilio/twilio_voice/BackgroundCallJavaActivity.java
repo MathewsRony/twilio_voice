@@ -36,7 +36,7 @@ public class BackgroundCallJavaActivity extends AppCompatActivity{
     public static final String TwilioPreferences = "mx.TwilioPreferences";
 
 
-    //    private Call activeCall;
+//    private Call activeCall;
     private NotificationManager notificationManager;
 
     private PowerManager.WakeLock wakeLock;
@@ -78,9 +78,9 @@ public class BackgroundCallJavaActivity extends AppCompatActivity{
 
                 getWindow().addFlags(
                         WindowManager.LayoutParams.FLAG_FULLSCREEN |
-                                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
-                                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                 );
             }
         }
@@ -116,8 +116,8 @@ public class BackgroundCallJavaActivity extends AppCompatActivity{
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent != null && intent.getAction() != null){
-            Log.d(TAG, "onNewIntent-");
-            Log.d(TAG, intent.getAction());
+        Log.d(TAG, "onNewIntent-");
+        Log.d(TAG, intent.getAction());
             switch (intent.getAction()){
                 case Constants.ACTION_CANCEL_CALL:
                     callCanceled();
@@ -133,32 +133,32 @@ public class BackgroundCallJavaActivity extends AppCompatActivity{
     private void configCallUI() {
         Log.d(TAG, "configCallUI");
 
-        btnMute.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onCLick");
-                sendIntent(Constants.ACTION_TOGGLE_MUTE);
-                isMuted = !isMuted;
-                applyFabState(btnMute, isMuted);
-            }
-        });
+            btnMute.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onCLick");
+                    sendIntent(Constants.ACTION_TOGGLE_MUTE);
+                    isMuted = !isMuted;
+                    applyFabState(btnMute, isMuted);
+                }
+            });
 
-        btnHangUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendIntent(Constants.ACTION_END_CALL);
-                finish();
-            }
-        });
-        btnOutput.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-                boolean isOnSpeaker = !audioManager.isSpeakerphoneOn();
-                audioManager.setSpeakerphoneOn(isOnSpeaker);
-                applyFabState(btnOutput, isOnSpeaker);
-            }
-        });
+            btnHangUp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sendIntent(Constants.ACTION_END_CALL);
+                    finish();
+                }
+            });
+            btnOutput.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+                    boolean isOnSpeaker = !audioManager.isSpeakerphoneOn();
+                    audioManager.setSpeakerphoneOn(isOnSpeaker);
+                    applyFabState(btnOutput, isOnSpeaker);
+                }
+            });
 
     }
 
