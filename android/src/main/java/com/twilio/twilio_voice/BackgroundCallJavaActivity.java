@@ -95,6 +95,7 @@ public class BackgroundCallJavaActivity extends AppCompatActivity{
         if (intent != null){
 
             String fromId = intent.getStringExtra(Constants.CALL_FROM).replace("client:","");
+            Log.d(TAG, "fromId "+fromId);
             if(fromId != null){
 
                 SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
