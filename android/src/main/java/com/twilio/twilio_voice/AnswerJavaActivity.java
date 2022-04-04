@@ -53,6 +53,8 @@ public class AnswerJavaActivity extends AppCompatActivity {
         boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
 
         Log.d(TAG, "isKeyguardUp1 $isKeyguardUp1");
+        Log.d(TAG, "isKeyguardUp1"+isKeyguardUp.toString());
+        
         if (isKeyguardUp) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
