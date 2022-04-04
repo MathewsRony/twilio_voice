@@ -117,14 +117,14 @@ public class AnswerJavaActivity extends AppCompatActivity {
             public void run() {
                 handler.postDelayed(runnable, delay);
                 try {
-
                     Log.d(TAG, "Log!!!!!!!!!=Timer");
                     String fromId = activeCallInvite.getFrom().replace("client:", "");
+                    Log.d(TAG, "fromId"+fromId);
                     SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
                     String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
+                    Log.d(TAG, "caller"+caller);
                     tvUserName.setText(caller);
                 }catch (Exception e){
-
                     Log.d(TAG, e.toString());
                 }
             }
