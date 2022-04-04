@@ -17,6 +17,10 @@
         <action android:name="ACTION_ACCEPT"  android:exported="true"/>
         <action android:name="ACTION_REJECT"  android:exported="true"/>
       </intent-filter>
+      <intent-filter>
+        <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
     </service>
     <meta-data android:name="flutterEmbedding" android:value="2" />
   </application>
