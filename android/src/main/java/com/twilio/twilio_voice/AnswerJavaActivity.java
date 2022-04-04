@@ -96,14 +96,12 @@ public class AnswerJavaActivity extends AppCompatActivity {
                     configCallUI();
                     break;
                 case Constants.ACTION_CANCEL_CALL:
+                case Constants.ACTION_REJECT:
                     newCancelCallClickListener();
                     break;
                case Constants.ACTION_ACCEPT:
                    checkPermissionsAndAccept();
                    break;
-//                case Constants.ACTION_REJECT:
-//                    newCancelCallClickListener();
-//                    break;
                 default: {
                 }
             }
@@ -138,6 +136,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
         }, delay);
         super.onResume();
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -207,7 +206,6 @@ public class AnswerJavaActivity extends AppCompatActivity {
     }
 
     private void newCancelCallClickListener() {
-
         handler.removeCallbacks(runnable);
         finish();
     }
