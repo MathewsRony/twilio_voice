@@ -202,10 +202,13 @@ public class AnswerJavaActivity extends AppCompatActivity {
         acceptIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
         Log.d(TAG, "Clicked accept startService");
         startService(acceptIntent);
+        handler.removeCallbacks(runnable);
         finish();
     }
 
     private void newCancelCallClickListener() {
+
+        handler.removeCallbacks(runnable);
         finish();
     }
 
@@ -216,6 +219,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
             rejectIntent.setAction(Constants.ACTION_REJECT);
             rejectIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
             startService(rejectIntent);
+            handler.removeCallbacks(runnable);
             finish();
         }
     }
