@@ -59,9 +59,10 @@ public class BackgroundCallJavaActivity extends AppCompatActivity{
         btnHangUp = (ImageView) findViewById(R.id.btnHangUp);
 
         KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        Boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
+        boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
 
         Log.d(TAG, "isKeyguardUp $isKeyguardUp");
+        Log.d(TAG, "isKeyguardUp "+isKeyguardUp);
         if (isKeyguardUp) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
