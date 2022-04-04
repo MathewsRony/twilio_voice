@@ -146,10 +146,9 @@ public class IncomingCallNotificationService extends Service {
         acceptIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         acceptIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
         PendingIntent piAcceptIntent = PendingIntent.getService(getApplicationContext(), 0, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         long[] mVibratePattern = new long[]{0, 400, 400, 400, 400, 400, 400, 400};
         Notification.Builder builder =
-                new Notification.Builder(getApplicationContext(), channelId)
+                new Notification.Builder(getApplicationContext(), "high_importance_channel")
                         .setSmallIcon(R.drawable.ic_call_end_white_24dp)
                         .setContentTitle(title)
                         .setContentText(text)
@@ -184,6 +183,7 @@ public class IncomingCallNotificationService extends Service {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(callInviteChannel);
 
+//        return channelId;
         return channelId;
     }
 
