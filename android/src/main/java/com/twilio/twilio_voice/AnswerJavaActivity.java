@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +40,9 @@ public class AnswerJavaActivity extends AppCompatActivity {
     private ImageView btnAnswer;
     private ImageView btnReject;
 
+    Handler handler = new Handler();
+    Runnable runnable;
+    int delay = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +110,26 @@ public class AnswerJavaActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "onResumeHere");
+        handler.postDelayed(runnable = new Runnable() {
+            public void run() {
+                handler.postDelayed(runnable, delay);
+                try {
+
+                    Log.d(TAG, "Log!!!!!!!!!=Timer");
+                    String fromId = activeCallInvite.getFrom().replace("client:", "");
+                    SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
+                    String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
+                    tvUserName.setText(caller);
+                }catch (Exception e){
+
+                }
+            }
+        }, delay);
+        super.onResume();
+    }
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
