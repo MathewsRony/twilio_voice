@@ -125,6 +125,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
                     tvUserName.setText(caller);
                 }catch (Exception e){
 
+                    Log.d(TAG, e.toString());
                 }
             }
         }, delay);
