@@ -96,6 +96,8 @@ public class BackgroundCallJavaActivity extends AppCompatActivity{
 
         if (intent != null){
 
+            Log.d(TAG, "intent********** ");
+            Log.d(TAG, "intent********** "+intent.getStringExtra(Constants.CALL_FROM));
             String fromId = intent.getStringExtra(Constants.CALL_FROM).replace("client:","");
             Log.d(TAG, "fromId "+fromId);
             if(fromId != null){

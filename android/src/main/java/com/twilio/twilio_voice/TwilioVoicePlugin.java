@@ -377,6 +377,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
+        Log.d(TAG, call.method);
         if (call.method.equals("tokens")) {
             Log.d(TAG, "Setting up tokens");
             this.accessToken = call.argument("accessToken");
@@ -653,6 +654,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
     private void disconnected() {
 
+        Log.d(TAG, "disconnected");
         if (activeCall == null) return;
 
         if (backgroundCallUI) {
