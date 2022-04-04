@@ -90,33 +90,29 @@ public class BackgroundCallJavaActivity extends AppCompatActivity{
 
         handleCallIntent(getIntent());
     }
+    private void handleCallIntent(Intent intent) {
+        if (intent != null) {
 
-    private void handleCallIntent(Intent intent){
-        Log.d(TAG, "intent********** ");
 
-        if (intent != null){
-
-            Log.d(TAG, "intent********** ");
-            Log.d(TAG, "intent********** "+intent.getStringExtra(Constants.CALL_FROM));
-            String fromId = intent.getStringExtra(Constants.CALL_FROM).replace("client:","");
-            Log.d(TAG, "fromId "+fromId);
-            if(fromId != null){
+            if (intent.getStringExtra(Constants.CALL_FROM) != null) {
+                String fromId = intent.getStringExtra(Constants.CALL_FROM).replace("client:", "");
 
                 SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
-                String caller = preferences.getString(fromId, preferences.getString("defaultCaller", "Desconocido"));
-                Log.d(TAG,"handleCallIntent");
-                Log.d(TAG,"caller from");
-                Log.d(TAG,caller);
+                String caller = preferences.getString(fromId, preferences.getString("defaultCaller", getString(R.string.unknown_caller)));
+                Log.d(TAG, "handleCallIntent");
+                Log.d(TAG, "caller from");
+                Log.d(TAG, caller);
 
                 tvUserName.setText(caller);
-                tvCallStatus.setText("Conectado");
+                tvCallStatus.setText(getString(R.string.connected_status));
                 Log.d(TAG, "handleCallIntent-");
                 configCallUI();
+            }else{
+                finish();
             }
-        }else{Log.d(TAG, "********** 1223344");
-
         }
     }
+
 
 
 
