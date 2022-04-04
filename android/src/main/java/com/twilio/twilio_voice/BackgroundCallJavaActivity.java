@@ -92,6 +92,8 @@ public class BackgroundCallJavaActivity extends AppCompatActivity{
     }
 
     private void handleCallIntent(Intent intent){
+        Log.d(TAG, "intent********** ");
+
         if (intent != null){
 
             String fromId = intent.getStringExtra(Constants.CALL_FROM).replace("client:","");
@@ -109,6 +111,8 @@ public class BackgroundCallJavaActivity extends AppCompatActivity{
                 Log.d(TAG, "handleCallIntent-");
                 configCallUI();
             }
+        }else{Log.d(TAG, "********** 1223344");
+
         }
     }
 
