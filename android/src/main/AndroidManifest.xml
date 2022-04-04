@@ -8,14 +8,14 @@
   <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
   <application>
 
-    <activity android:name=".AnswerJavaActivity" android:turnScreenOn="true" android:showWhenLocked="true" android:showOnLockScreen="true" android:theme="@style/Theme.AppCompat" />
+    <activity android:name=".AnswerJavaActivity" android:exported="true" android:turnScreenOn="true" android:showWhenLocked="true" android:showOnLockScreen="true" android:theme="@style/Theme.AppCompat" />
 
-    <activity android:name=".BackgroundCallJavaActivity" android:turnScreenOn="true" android:showWhenLocked="true" android:showOnLockScreen="true" android:theme="@style/Theme.AppCompat" />
+    <activity android:name=".BackgroundCallJavaActivity"  android:exported="true" android:turnScreenOn="true" android:showWhenLocked="true" android:showOnLockScreen="true" android:theme="@style/Theme.AppCompat" />
 
     <service android:enabled="true" android:name=".IncomingCallNotificationService">
       <intent-filter>
-        <action android:name="ACTION_ACCEPT" />
-        <action android:name="ACTION_REJECT" />
+        <action android:name="ACTION_ACCEPT"  android:exported="true"/>
+        <action android:name="ACTION_REJECT"  android:exported="true"/>
       </intent-filter>
     </service>
     <meta-data android:name="flutterEmbedding" android:value="2" />
