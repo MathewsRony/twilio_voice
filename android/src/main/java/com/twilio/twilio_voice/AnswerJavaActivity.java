@@ -199,7 +199,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
         acceptIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
         acceptIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, 0);
         acceptIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
-        Log.d(TAG, "Clicked accept startService");
+        Log.d(TAG, "Clicked accepted startService");
         startService(acceptIntent);
         handler.removeCallbacks(runnable);
 //        finish();
