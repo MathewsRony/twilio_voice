@@ -56,7 +56,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
     private static final String CHANNEL_NAME = "twilio_voice";
     private static final String TAG = "TwilioVoicePlugin";
-    public static final String TwilioPreferences = "mx.TwilioPreferences";
+    public static final String TwilioPreferences = "com.twilio.twilio_voicePreferences";
     private static final int MIC_PERMISSION_REQUEST_CODE = 1;
 
     private String accessToken;
@@ -133,11 +133,9 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
             switch (action) {
                 case Constants.ACTION_INCOMING_CALL:
                     handleIncomingCall(activeCallInvite.getFrom(), activeCallInvite.getTo());
-
-                    Log.d(TAG, "isAppVisible " + isAppVisible());
-//                    if (Build.VERSION.SDK_INT >= 29 && !isAppVisible()) {
-//                        break;
-//                    }
+                    if (Build.VERSION.SDK_INT >= 29 && !isAppVisible()) {
+                        break;
+                    }
                     startAnswerActivity(activeCallInvite, activeCallNotificationId);
                     break;
                 case Constants.ACTION_CANCEL_CALL:
@@ -147,24 +145,24 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
                     handleReject();
                     break;
                 case Constants.ACTION_ACCEPT:
-                        int acceptOrigin = intent.getIntExtra(Constants.ACCEPT_CALL_ORIGIN,0);
-                        if(acceptOrigin == 0){
-                             Intent answerIntent = new Intent(activity, AnswerJavaActivity.class);
-                            answerIntent.setAction(Constants.ACTION_ACCEPT);
-                            answerIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
-                            answerIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
-                            answerIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            answerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            activity.startActivity(answerIntent);
-                        }else{
-                            answer();
-                        }
+                    int acceptOrigin = intent.getIntExtra(Constants.ACCEPT_CALL_ORIGIN,0);
+                    if(acceptOrigin == 0){
+                        Intent answerIntent = new Intent(activity, AnswerJavaActivity.class);
+                        answerIntent.setAction(Constants.ACTION_ACCEPT);
+                        answerIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
+                        answerIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
+                        answerIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        answerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        activity.startActivity(answerIntent);
+                    }else{
+                        answer();
+                    }
 
                     break;
                 case Constants.ACTION_TOGGLE_MUTE:
                     if (activeCall != null) {
-                      boolean muted = activeCall.isMuted();
-                      mute(!muted);
+                        boolean muted = activeCall.isMuted();
+                        mute(!muted);
                     }
                     break;
                 case Constants.ACTION_END_CALL:
@@ -379,7 +377,6 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
-        Log.d(TAG, call.method);
         if (call.method.equals("tokens")) {
             Log.d(TAG, "Setting up tokens");
             this.accessToken = call.argument("accessToken");
@@ -406,7 +403,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
             result.success(true);
         } else if (call.method.equals("toggleMute")) {
-          boolean muted = call.argument("muted");
+            boolean muted = call.argument("muted");
             Log.d(TAG, "Muting call");
             this.mute(muted);
             result.success(true);
@@ -656,7 +653,6 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
     private void disconnected() {
 
-        Log.d(TAG, "disconnected");
         if (activeCall == null) return;
 
         if (backgroundCallUI) {

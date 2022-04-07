@@ -39,10 +39,10 @@ public class AnswerJavaActivity extends AppCompatActivity {
     private TextView tvCallStatus;
     private ImageView btnAnswer;
     private ImageView btnReject;
-
     Handler handler = new Handler();
     Runnable runnable;
     int delay = 1000;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +56,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
         KeyguardManager kgm = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         boolean isKeyguardUp = kgm.inKeyguardRestrictedInputMode();
 
-        Log.d(TAG, "isKeyguardUp1 $isKeyguardUp1");
-        Log.d(TAG, "isKeyguardUp1"+isKeyguardUp);
-
+        Log.d(TAG, "isKeyguardUp1 "+isKeyguardUp);
         if (isKeyguardUp) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
@@ -82,6 +80,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
 
         handleIncomingCallIntent(getIntent());
     }
+
     private void handleIncomingCallIntent(Intent intent) {
         if (intent != null && intent.getAction() != null) {
             Log.d(TAG, "handleIncomingCallIntent-");
@@ -96,18 +95,19 @@ public class AnswerJavaActivity extends AppCompatActivity {
                     configCallUI();
                     break;
                 case Constants.ACTION_CANCEL_CALL:
-                case Constants.ACTION_REJECT:
                     newCancelCallClickListener();
                     break;
-               case Constants.ACTION_ACCEPT:
-                   checkPermissionsAndAccept();
-                   break;
+                case Constants.ACTION_ACCEPT:
+                    checkPermissionsAndAccept();
+                    break;
+//                case Constants.ACTION_REJECT:
+//                    newCancelCallClickListener();
+//                    break;
                 default: {
                 }
             }
         }
     }
-
     @Override
     protected void onResume() {
         Log.d(TAG, "onResumeHere");
@@ -136,7 +136,6 @@ public class AnswerJavaActivity extends AppCompatActivity {
         }, delay);
         super.onResume();
     }
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -197,13 +196,12 @@ public class AnswerJavaActivity extends AppCompatActivity {
         Intent acceptIntent = new Intent(this, IncomingCallNotificationService.class);
         acceptIntent.setAction(Constants.ACTION_ACCEPT);
         acceptIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
-        acceptIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, 0);
+        acceptIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, 1);
         acceptIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
         Log.d(TAG, "Clicked accept startService");
         startService(acceptIntent);
         handler.removeCallbacks(runnable);
-//        finish();
-
+        finish();
     }
 
     private void newCancelCallClickListener() {
