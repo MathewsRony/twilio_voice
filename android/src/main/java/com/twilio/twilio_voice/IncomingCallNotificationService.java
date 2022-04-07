@@ -258,7 +258,7 @@ public class IncomingCallNotificationService extends Service {
                             .setContentTitle(title)
                             .setCategory(Notification.CATEGORY_CALL)
                             .setAutoCancel(true)
-                            .addAction(android.R.drawable.ic_menu_call, getString(R.string.twilio_call_back), piReturnCallIntent)
+//                            .addAction(android.R.drawable.ic_menu_call, getString(R.string.twilio_call_back), piReturnCallIntent)
                             .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setContentTitle(getApplicationName(context))
                             .setContentText(title)
@@ -317,17 +317,17 @@ public class IncomingCallNotificationService extends Service {
         pluginIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
         pluginIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         LocalBroadcastManager.getInstance(this).sendBroadcast(pluginIntent);
-        startAnswerActivity(callInvite, notificationId);
+//        startAnswerActivity(callInvite, notificationId);
     }
-    private void startAnswerActivity(CallInvite callInvite, int notificationId) {
-        Intent intent = new Intent(this, AnswerJavaActivity.class);
-        intent.setAction(Constants.ACTION_INCOMING_CALL);
-        intent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
-        intent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
+//    private void startAnswerActivity(CallInvite callInvite, int notificationId) {
+//        Intent intent = new Intent(this, AnswerJavaActivity.class);
+//        intent.setAction(Constants.ACTION_INCOMING_CALL);
+//        intent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
+//        intent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
+//    }
     private boolean isAppVisible() {
         return ProcessLifecycleOwner
                 .get()
