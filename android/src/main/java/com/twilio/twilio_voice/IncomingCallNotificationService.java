@@ -317,7 +317,6 @@ public class IncomingCallNotificationService extends Service {
         pluginIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         LocalBroadcastManager.getInstance(this).sendBroadcast(pluginIntent);
     }
-
     private boolean isAppVisible() {
         return ProcessLifecycleOwner
                 .get()
