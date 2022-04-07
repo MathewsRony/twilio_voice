@@ -197,7 +197,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
         Intent acceptIntent = new Intent(this, IncomingCallNotificationService.class);
         acceptIntent.setAction(Constants.ACTION_ACCEPT);
         acceptIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
-        acceptIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, 1);
+        acceptIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, 0);
         acceptIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
         Log.d(TAG, "Clicked accepted startService");
         startService(acceptIntent);
