@@ -28,7 +28,7 @@ import com.twilio.voice.CancelledCallInvite;
 public class IncomingCallNotificationService extends Service {
 
     private static final String TAG = IncomingCallNotificationService.class.getSimpleName();
-    public static final String TwilioPreferences = "com.twilio.twilio_voicePreferences";
+    public static final String TwilioPreferences = "mx.TwilioPreferences";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -43,7 +43,7 @@ public class IncomingCallNotificationService extends Service {
                     break;
                 case Constants.ACTION_ACCEPT:
                     int origin = intent.getIntExtra(Constants.ACCEPT_CALL_ORIGIN, 0);
-                    Log.d(TAG, "onStartCommand-ActionAccept $origin");
+                    Log.d(TAG, "onStartCommand-ActionAccept" + origin);
                     accept(callInvite, notificationId, origin);
                     break;
                 case Constants.ACTION_REJECT:
@@ -74,7 +74,7 @@ public class IncomingCallNotificationService extends Service {
         intent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
         intent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, notificationId, intent, PendingIntent.FLAG_IMMUTABLE);
         /*
          * Pass the notification id and call sid to use as an identifier to cancel the
          * notification later
@@ -89,6 +89,7 @@ public class IncomingCallNotificationService extends Service {
         String caller = preferences.getString(fromId, preferences.getString("defaultCaller", "Unknown caller"));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.i(TAG, "building notification for new phones");
             return buildNotification(getApplicationName(context), getString(R.string.new_call, caller),
                     pendingIntent,
                     extras,
@@ -96,6 +97,7 @@ public class IncomingCallNotificationService extends Service {
                     notificationId,
                     createChannel(channelImportance));
         } else {
+            Log.i(TAG, "building notification for older phones");
 
             return new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.ic_call_end_white_24dp)
@@ -138,14 +140,14 @@ public class IncomingCallNotificationService extends Service {
         rejectIntent.setAction(Constants.ACTION_REJECT);
         rejectIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         rejectIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
-        PendingIntent piRejectIntent = PendingIntent.getService(getApplicationContext(), 0, rejectIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent piRejectIntent = PendingIntent.getService(getApplicationContext(), 0, rejectIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Intent acceptIntent = new Intent(getApplicationContext(), IncomingCallNotificationService.class);
         acceptIntent.setAction(Constants.ACTION_ACCEPT);
         acceptIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, 0);
         acceptIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         acceptIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
-        PendingIntent piAcceptIntent = PendingIntent.getService(getApplicationContext(), 0, acceptIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent piAcceptIntent = PendingIntent.getService(getApplicationContext(), 0, acceptIntent, PendingIntent.FLAG_IMMUTABLE);
 
         long[] mVibratePattern = new long[]{0, 400, 400, 400, 400, 400, 400, 400};
         Notification.Builder builder =
@@ -201,17 +203,20 @@ public class IncomingCallNotificationService extends Service {
     }
 
     private void reject(CallInvite callInvite) {
-        endForeground();
         callInvite.reject(getApplicationContext());
+        SoundPoolManager.getInstance(this).stopRinging();
+        SoundPoolManager.getInstance(this).playDisconnect();
         Intent rejectCallIntent = new Intent();
         rejectCallIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         rejectCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         rejectCallIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         rejectCallIntent.setAction(Constants.ACTION_REJECT);
         LocalBroadcastManager.getInstance(this).sendBroadcast(rejectCallIntent);
+        endForeground();
     }
 
     private void handleCancelledCall(Intent intent) {
+        SoundPoolManager.getInstance(this).stopRinging();
         CancelledCallInvite cancelledCallInvite = intent.getParcelableExtra(Constants.CANCELLED_CALL_INVITE);
         SharedPreferences preferences = getApplicationContext().getSharedPreferences(TwilioPreferences, Context.MODE_PRIVATE);
         boolean prefsShow = preferences.getBoolean("show-notifications", true);
@@ -244,7 +249,7 @@ public class IncomingCallNotificationService extends Service {
         returnCallIntent.setAction(Constants.ACTION_RETURN_CALL);
         returnCallIntent.putExtra(Constants.CALL_TO, to);
         returnCallIntent.putExtra(Constants.CALL_FROM, callerId);
-        PendingIntent piReturnCallIntent = PendingIntent.getService(getApplicationContext(), 0, returnCallIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent piReturnCallIntent = PendingIntent.getService(getApplicationContext(), 0, returnCallIntent, PendingIntent.FLAG_IMMUTABLE);
 
 
         Notification notification;
@@ -282,7 +287,8 @@ public class IncomingCallNotificationService extends Service {
     }
 
     private void handleIncomingCall(CallInvite callInvite, int notificationId) {
-        Log.i(TAG, "handle incomming call");
+        Log.i(TAG, "handle incoming call");
+        SoundPoolManager.getInstance(this).playRinging();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             setCallInProgressNotification(callInvite, notificationId);
         }
@@ -307,6 +313,21 @@ public class IncomingCallNotificationService extends Service {
     /*
      * Send the CallInvite to the VoiceActivity. Start the activity if it is not running already.
      */
+//    private void sendCallInviteToActivity(CallInvite callInvite, int notificationId) {
+//
+//
+//        Log.i(TAG, "sendCallInviteToActivity.");
+//
+//        Intent pluginIntent = new Intent();
+//        pluginIntent.setAction(Constants.ACTION_INCOMING_CALL);
+//        pluginIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
+//        pluginIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(pluginIntent);
+//        if (TwilioVoicePlugin.hasStarted || (Build.VERSION.SDK_INT >= 29 && !isAppVisible())) {
+//            return;
+//        }
+//        startAnswerActivity(callInvite, notificationId);
+//    }
     private void sendCallInviteToActivity(CallInvite callInvite, int notificationId) {
 //        if (Build.VERSION.SDK_INT >= 29 && !isAppVisible()) {
 //            return;
@@ -317,6 +338,16 @@ public class IncomingCallNotificationService extends Service {
         pluginIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         LocalBroadcastManager.getInstance(this).sendBroadcast(pluginIntent);
     }
+    private void startAnswerActivity(CallInvite callInvite, int notificationId) {
+        Intent intent = new Intent(this, AnswerJavaActivity.class);
+        intent.setAction(Constants.ACTION_INCOMING_CALL);
+        intent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
+        intent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     private boolean isAppVisible() {
         return ProcessLifecycleOwner
                 .get()

@@ -82,11 +82,11 @@ public class VoiceFirebaseMessagingService extends FirebaseMessagingService {
 
             if (!valid) {
                 Log.e(TAG, "The message was not a valid Twilio Voice SDK payload: " +
-                 remoteMessage.getData());
-                 notificationReceived(remoteMessage);
+                        remoteMessage.getData());
+                notificationReceived(remoteMessage);
             }
         }
-        
+
     }
     // Override if you also receive notifications from other plugins
     public void notificationReceived(final RemoteMessage remoteMessage){ }
