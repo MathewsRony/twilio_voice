@@ -311,23 +311,13 @@ public class IncomingCallNotificationService extends Service {
 //        if (Build.VERSION.SDK_INT >= 29 && !isAppVisible()) {
 //            return;
 //        }
-        Log.i(TAG, "sendCallInviteToActivity.");
         Intent pluginIntent = new Intent();
         pluginIntent.setAction(Constants.ACTION_INCOMING_CALL);
         pluginIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
         pluginIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
         LocalBroadcastManager.getInstance(this).sendBroadcast(pluginIntent);
-        startAnswerActivity(callInvite, notificationId);
     }
-    private void startAnswerActivity(CallInvite callInvite, int notificationId) {
-        Intent intent = new Intent(this, AnswerJavaActivity.class);
-        intent.setAction(Constants.ACTION_INCOMING_CALL);
-        intent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
-        intent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
+
     private boolean isAppVisible() {
         return ProcessLifecycleOwner
                 .get()
