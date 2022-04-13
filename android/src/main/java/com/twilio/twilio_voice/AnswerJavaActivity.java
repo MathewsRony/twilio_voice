@@ -123,6 +123,7 @@ public class AnswerJavaActivity extends AppCompatActivity {
                     String caller = preferences.getString("defaultCaller",fromId.toString());
 
                     Log.d(TAG, "caller"+caller);
+                    Log.d(TAG, "caller"+preferences.getString("defaultCaller",getString(R.string.unknown_caller)));
                     tvUserName.setText(caller);
                 }catch (Exception e){
                     Log.d(TAG, e.toString());
