@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -134,6 +135,15 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
                 case Constants.ACTION_INCOMING_CALL:
                     handleIncomingCall(activeCallInvite.getFrom(), activeCallInvite.getTo());
                     if (Build.VERSION.SDK_INT >= 29 && !isAppVisible()) {
+                        Intent clIntent = new Intent(activity, AnswerJavaActivity.class);
+                        clIntent.setAction(Intent.ACTION_MAIN);
+                        clIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                        clIntent.setAction(Constants.ACTION_INCOMING_CALL);
+                        clIntent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, activeCallNotificationId);
+                        clIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
+                        clIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        clIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        activity.startActivity(clIntent);
                         break;
                     }
                     startAnswerActivity(activeCallInvite, activeCallNotificationId);
@@ -194,6 +204,10 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
 
     private void startAnswerActivity(CallInvite callInvite, int notificationId) {
         Intent intent = new Intent(activity, AnswerJavaActivity.class);
+        if (!isAppVisible()){
+            intent.setAction(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        }
         intent.setAction(Constants.ACTION_INCOMING_CALL);
         intent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
         intent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
@@ -686,6 +700,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
         }
     }
 
+    @SuppressLint("WrongConstant")
     private void setAudioFocus(boolean setFocus) {
         if (audioManager != null) {
             if (setFocus) {

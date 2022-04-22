@@ -14,4 +14,5 @@ enum CallEvent {
   answer,
   missedCall,
   returningCall,
+  declined
 }
