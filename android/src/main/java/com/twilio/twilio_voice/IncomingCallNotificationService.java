@@ -195,13 +195,9 @@ public class IncomingCallNotificationService extends Service {
     }
 
     private void accept(CallInvite callInvite, int notificationId, int origin) {
-        //endForeground();
+        endForeground();
         Log.i(TAG, "accept call invite!");
         Intent activeCallIntent = new Intent();
-        if (Build.VERSION.SDK_INT >= 29 && !isAppVisible()) {
-            activeCallIntent.setAction(Intent.ACTION_MAIN);
-            activeCallIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        }
         activeCallIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         activeCallIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activeCallIntent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);
@@ -209,7 +205,6 @@ public class IncomingCallNotificationService extends Service {
         activeCallIntent.putExtra(Constants.ACCEPT_CALL_ORIGIN, origin);
         activeCallIntent.setAction(Constants.ACTION_ACCEPT);
         LocalBroadcastManager.getInstance(this).sendBroadcast(activeCallIntent);
-        endForeground();
     }
 
     private void reject(CallInvite callInvite) {
@@ -309,7 +304,7 @@ public class IncomingCallNotificationService extends Service {
         stopForeground(true);
     }
 
-   // @TargetApi(Build.VERSION_CODES.O)
+    @TargetApi(Build.VERSION_CODES.O)
     private void setCallInProgressNotification(CallInvite callInvite, int notificationId) {
         if (isAppVisible()) {
             Log.i(TAG, "setCallInProgressNotification - app is visible.");
