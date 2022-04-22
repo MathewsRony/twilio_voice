@@ -70,6 +70,10 @@ public class IncomingCallNotificationService extends Service {
     private Notification createNotification(CallInvite callInvite, int notificationId, int channelImportance) {
         Log.i(TAG, "createNotification");
         Intent intent = new Intent(this, AnswerJavaActivity.class);
+        if(!isAppVisible()){
+            intent.setAction(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        }
         intent.setAction(Constants.ACTION_INCOMING_CALL_NOTIFICATION);
         intent.putExtra(Constants.INCOMING_CALL_NOTIFICATION_ID, notificationId);
         intent.putExtra(Constants.INCOMING_CALL_INVITE, callInvite);

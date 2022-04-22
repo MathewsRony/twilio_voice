@@ -51,6 +51,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 
 import static java.lang.Boolean.getBoolean;
+import static tvo.webrtc.ContextUtils.getApplicationContext;
 
 public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCallHandler, EventChannel.StreamHandler,
         ActivityAware, PluginRegistry.NewIntentListener {
@@ -135,7 +136,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
                 case Constants.ACTION_INCOMING_CALL:
                     handleIncomingCall(activeCallInvite.getFrom(), activeCallInvite.getTo());
                     if (Build.VERSION.SDK_INT >= 29 && !isAppVisible()) {
-                        Intent clIntent = new Intent(activity, AnswerJavaActivity.class);
+                        Intent clIntent = new Intent(activity.getApplicationContext(), AnswerJavaActivity.class);
                         clIntent.setAction(Intent.ACTION_MAIN);
                         clIntent.addCategory(Intent.CATEGORY_LAUNCHER);
                         clIntent.setAction(Constants.ACTION_INCOMING_CALL);
@@ -143,7 +144,7 @@ public class TwilioVoicePlugin implements FlutterPlugin, MethodChannel.MethodCal
                         clIntent.putExtra(Constants.INCOMING_CALL_INVITE, activeCallInvite);
                         clIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         clIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        activity.startActivity(clIntent);
+                        activity.getApplicationContext().startActivity(clIntent);
                         break;
                     }
                     startAnswerActivity(activeCallInvite, activeCallNotificationId);
